@@ -1,0 +1,47 @@
+
+services:
+  mongo_trd:
+    image: mongo:latest
+    container_name: mongo_trd
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+    networks:
+      - docker_network_trd
+#    volumes:
+#      - ./mongo-init:/docker-entrypoint-initdb.d
+
+
+  mongo-express_trd:
+    image: mongo-express:latest
+    container_name: mongo-express_trd
+    depends_on:
+      - mongo_trd
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: admin
+      ME_CONFIG_MONGODB_URL: mongodb://admin:admin@mongo_trd:27017/
+    networks:
+      - docker_network_trd
+
+  trd-control-server:
+    image: trd-control-server:1.0.0
+    container_name: trd-control-server
+    depends_on:
+      - mongo_trd
+    ports:
+      - "8080:8080"
+    networks:
+      - docker_network_trd
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://admin:admin@mongo_trd:27017/admin?authSource=admin
+      SPRING_PROFILES_ACTIVE : docker
+
+networks:
+  docker_network_trd:
+    driver: bridge
+
