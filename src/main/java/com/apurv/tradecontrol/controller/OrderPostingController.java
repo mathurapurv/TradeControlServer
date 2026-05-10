@@ -77,10 +77,10 @@ public class OrderPostingController {
         Float calculatedUnits = order.getUnits();
         
         if (latestPrice != null && latestPrice.getPrice() != null && latestPrice.getPrice() > 0) {
-            if (order.getUnits() != null && order.getUnits() > 0) {
+            if (validUnits) {
                 // Calculate amount from units * price
                 calculatedAmount = order.getUnits() * latestPrice.getPrice();
-            } else if (order.getAmount() != null && order.getAmount() > 0) {
+            } else if (validAmount) {
                 // Calculate units from amount / price
                 calculatedUnits = order.getAmount() / latestPrice.getPrice();
             }
@@ -91,7 +91,8 @@ public class OrderPostingController {
         trade.setTradeID(tradeID);
         trade.setCusip(order.getCusip());
         trade.setAccountNumber(order.getAccountNumber());
-        trade.setTradeType(com.apurv.tradecontrol.enums.TradeType.BUY); // Default to BUY, can be updated based on request
+        // Default to BUY, can be updated based on request
+        trade.setTradeType(com.apurv.tradecontrol.enums.TradeType.BUY);
         trade.setUnits(calculatedUnits);
         trade.setAmount(calculatedAmount);
         
