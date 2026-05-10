@@ -13,19 +13,19 @@ services:
 #    volumes:
 #      - ./mongo-init:/docker-entrypoint-initdb.d
 
-  trd-kafka-broker:
+  kafka-trd:
     image: apache/kafka:latest
-    container_name: broker
+    container_name: kafka-trd
     networks:
       - docker_network_trd
     environment:
       KAFKA_NODE_ID: 1
       KAFKA_PROCESS_ROLES: broker,controller
-      KAFKA_LISTENERS: PLAINTEXT://localhost:9092,CONTROLLER://localhost:9093
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_LISTENERS: PLAINTEXT://kafka-trd:9092,CONTROLLER://kafka-trd:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-trd:9092
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
-      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka-trd:9093
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
@@ -39,7 +39,7 @@ services:
     container_name: mongo-express_trd
     depends_on:
       - mongo_trd
-      - trd-kafka-broker
+      - kafka-trd
     ports:
       - "8081:8081"
     environment:
