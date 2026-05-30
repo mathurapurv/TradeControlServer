@@ -34,7 +34,7 @@ public class TradeControlController {
         return ResponseEntity.ok(assets);
     }
 
-    @PostMapping("/assets")
+    @PostMapping("/add/assets")
     public ResponseEntity<Asset> createAsset(@RequestBody Asset asset) {
         Asset savedAsset = assetRepository.save(asset);
         return ResponseEntity.ok(savedAsset);
@@ -47,7 +47,7 @@ public class TradeControlController {
         return ResponseEntity.ok(accounts);
     }
 
-    @PostMapping("/accounts")
+    @PostMapping("/add/accounts")
     public ResponseEntity<Account> createAccount(@RequestBody Account account) {
         Account savedAccount = accountRepository.save(account);
         return ResponseEntity.ok(savedAccount);
@@ -60,7 +60,7 @@ public class TradeControlController {
         return ResponseEntity.ok(prices);
     }
 
-    @PostMapping("/prices")
+    @PostMapping("/add/prices")
     public ResponseEntity<Price> createPrice(@RequestBody Price price) {
         Price savedPrice = priceRepository.save(price);
         return ResponseEntity.ok(savedPrice);
@@ -73,7 +73,7 @@ public class TradeControlController {
         return ResponseEntity.ok(positions);
     }
 
-    @PostMapping("/positions")
+    @PostMapping("/add/positions")
     public ResponseEntity<Position> createPosition(@RequestBody Position position) {
         Position savedPosition = positionRepository.save(position);
         return ResponseEntity.ok(savedPosition);
@@ -86,7 +86,7 @@ public class TradeControlController {
         return ResponseEntity.ok(trades);
     }
 
-    @PostMapping("/trades")
+    @PostMapping("/add/trades")
     public ResponseEntity<Trade> createTrade(@RequestBody Trade trade) {
         Trade savedTrade = tradeRepository.save(trade);
         return ResponseEntity.ok(savedTrade);

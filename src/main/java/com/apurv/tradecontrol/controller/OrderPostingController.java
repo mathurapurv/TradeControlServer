@@ -11,6 +11,7 @@ import com.apurv.tradecontrol.repository.AssetRepository;
 import com.apurv.tradecontrol.repository.AccountRepository;
 import com.apurv.tradecontrol.repository.PriceRepository;
 import com.apurv.tradecontrol.repository.TradeRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api")
+@Slf4j
 public class OrderPostingController {
 
     @Autowired
@@ -46,6 +48,7 @@ public class OrderPostingController {
         if (!StringUtils.isBlank(order.getCusip())) {
             Asset asset = assetRepository.findByCusip(order.getCusip());
             if (asset == null) {
+                log.error("Asset not found for cusip: " + order.getCusip());
                 return ResponseEntity.ok(new OrderPostingResponse(tradeID, OrderStatus.REJECTED, null, null));
             }
         }
@@ -54,6 +57,7 @@ public class OrderPostingController {
         if (order.getAccountNumber() != null) {
             Account account = accountRepository.findByAccountNumber(order.getAccountNumber());
             if (account == null) {
+                log.error("Account not found for accountNumber: " + order.getAccountNumber());
                 return ResponseEntity.ok(new OrderPostingResponse(tradeID, OrderStatus.REJECTED, null, null));
             }
         }
@@ -63,6 +67,7 @@ public class OrderPostingController {
         boolean validAmount = order.getAmount() != null && order.getAmount() > 0;
         
         if (!validUnits && !validAmount) {
+            log.error("Invalid units or amount provided");
             return ResponseEntity.ok(new OrderPostingResponse(tradeID, OrderStatus.REJECTED, null, null));
         }
         
@@ -98,6 +103,7 @@ public class OrderPostingController {
         
         // Save trade to repository
         tradeRepository.save(trade);
+        log.info("Trade saved successfully: " + trade);
         
         // For now, assume all orders are successfully posted
         OrderStatus orderStatus = OrderStatus.SUCCESS;
@@ -109,7 +115,8 @@ public class OrderPostingController {
             calculatedAmount,
             calculatedUnits
         );
-        
+
+        log.info("Order posted successfully: " + response);
         return ResponseEntity.ok(response);
     }
 }
